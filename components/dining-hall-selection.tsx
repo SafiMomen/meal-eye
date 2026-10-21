@@ -19,18 +19,19 @@ type DiningHallSelectionRowProps = {
 const styles = {
   row: "relative",
   link: clsx(
-    "relative flex w-full items-center justify-between gap-3",
-    "px-3 py-3",
-    "text-left text-xs font-medium leading-relaxed",
+    "relative isolate flex w-full items-center justify-between gap-2",
+    "px-2.5 py-1.5",
+    "rounded-sm",
+    "text-left text-xs font-medium leading-4",
     "transition-colors duration-200",
     "focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-accent",
   ),
   idle: "text-muted hover:text-foreground",
-  selected: "text-foreground",
+  selected: "text-accent",
   disabled: "cursor-default text-muted",
-  marker: clsx(
-    "absolute bottom-3 left-0 top-3 w-0.5",
-    "bg-princeton",
+  selectionBackground: clsx(
+    "absolute inset-0 -z-10",
+    "rounded-sm bg-princeton/12",
   ),
   name: "min-w-0",
 };
@@ -38,7 +39,7 @@ const styles = {
 export function DiningHallSelectionList({ children }: { children: ReactNode }) {
   return (
     <LayoutGroup id="dining-hall-selection">
-      <ul>{children}</ul>
+      <ul className="space-y-0.5">{children}</ul>
     </LayoutGroup>
   );
 }
@@ -92,8 +93,8 @@ export function DiningHallSelectionRow({
         >
           {isSelected && (
             <m.span
-              className={styles.marker}
-              layoutId="selected-hall-marker"
+              className={styles.selectionBackground}
+              layoutId="selected-hall-background"
               transition={
                 prefersReducedMotion
                   ? { duration: 0 }

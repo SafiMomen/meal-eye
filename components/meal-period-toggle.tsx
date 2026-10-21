@@ -20,20 +20,20 @@ const styles = {
     "text-[11px] font-semibold uppercase tracking-[0.16em] text-muted",
   ),
   control: clsx(
-    "isolate grid w-full max-w-sm grid-cols-4 items-center sm:w-auto sm:max-w-none",
-    "border-b border-line/70",
+    "isolate grid w-full max-w-sm grid-cols-4 items-center gap-0.5 sm:w-auto sm:max-w-none",
   ),
   option: clsx(
-    "relative sm:min-w-24",
-    "px-2 py-2 sm:px-4",
+    "relative isolate sm:min-w-20",
+    "px-2 py-1.5 sm:px-3",
+    "rounded-sm",
     "text-center text-sm font-semibold",
     "transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-accent",
   ),
   selectedOption: "text-accent",
   idleOption: "text-muted hover:text-foreground",
-  indicator: clsx(
-    "absolute -bottom-px left-0 right-0 h-0.5",
-    "bg-princeton",
+  selectionBackground: clsx(
+    "absolute inset-0 -z-10",
+    "rounded-sm bg-princeton/12",
   ),
 };
 
@@ -72,12 +72,13 @@ export function MealPeriodToggle({
               {isSelected && (
                 <m.span
                   layoutId="selected-meal-period"
-                  className={styles.indicator}
+                  className={styles.selectionBackground}
                   transition={
                     prefersReducedMotion
                       ? { duration: 0 }
                       : { type: "spring", stiffness: 420, damping: 34 }
                   }
+                  aria-hidden="true"
                 />
               )}
               <span className="relative">{period}</span>

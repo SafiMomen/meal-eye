@@ -18,11 +18,11 @@ type DiningHallStatusListProps = {
 
 const styles = {
   navigation: clsx("w-full", "text-foreground"),
-  header: clsx("px-3 pb-3", "border-b border-line/60"),
+  header: "px-2.5 pb-1.5",
   heading: clsx(
     "text-[11px] font-semibold uppercase tracking-[0.12em] text-muted",
   ),
-  unavailable: clsx("px-3 py-5", "text-xs text-muted"),
+  unavailable: clsx("px-2.5 py-3", "text-xs text-muted"),
 };
 
 async function DiningHallMenuRow({
@@ -35,11 +35,12 @@ async function DiningHallMenuRow({
   isSelected: boolean;
 }) {
   const menu = hall.link ? await getMenu(hall).catch(() => null) : {};
-  const availability = menu === null
-    ? "unknown"
-    : Object.keys(menu).length === 0
-      ? "empty"
-      : "available";
+  const availability =
+    menu === null
+      ? "unknown"
+      : Object.keys(menu).length === 0
+        ? "empty"
+        : "available";
 
   return (
     <DiningHallSelectionRow
