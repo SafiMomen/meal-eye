@@ -113,6 +113,7 @@ export function DiningHallMenuContent({
                       sugarsGrams={food.sugarsGrams}
                       sodiumMilligrams={food.sodiumMilligrams}
                       religiousTags={food.religiousTags}
+                      religiousTagReasons={food.religiousTagReasons}
                     />
                   </m.div>
                 ))}

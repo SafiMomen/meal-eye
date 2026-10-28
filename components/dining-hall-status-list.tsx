@@ -6,7 +6,7 @@ import {
   DiningHallSelectionRow,
 } from "@/components/dining-hall-selection";
 import { MotionSurface } from "@/components/motion-surface";
-import { hasHaramEntree } from "@/lib/dining-hall-tags";
+import { getHaramEntreeReasons } from "@/lib/dining-hall-tags";
 import type { MealPeriod } from "@/lib/dining-page";
 import type { DiningHallElement } from "@/lib/dining-types";
 import clsx from "clsx";
@@ -42,6 +42,8 @@ async function DiningHallMenuRow({
       : Object.keys(menu).length === 0
         ? "empty"
         : "available";
+  const haramEntreeReasons =
+    menu === null ? [] : getHaramEntreeReasons(menu, selectedMeal);
 
   return (
     <DiningHallSelectionRow
@@ -49,7 +51,7 @@ async function DiningHallMenuRow({
       selectedMeal={selectedMeal}
       isSelected={isSelected}
       availability={availability}
-      hasHaramEntree={menu !== null && hasHaramEntree(menu, selectedMeal)}
+      haramEntreeReasons={haramEntreeReasons}
     />
   );
 }

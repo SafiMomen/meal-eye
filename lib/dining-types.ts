@@ -9,6 +9,21 @@ export type DiningHallElement = {
 
 export type ReligiousTag = "Halal" | "Haram" | "Kosher" | "Non-Kosher";
 
+export type ReligiousTagReason = {
+    source: "ingredient" | "food-name" | "menu-label" | "location" | "unspecified";
+    text: string;
+    category?: "pork" | "alcohol";
+    identifiers?: string[];
+    foodName?: string;
+};
+
+export type ReligiousTagReasons = Partial<Record<ReligiousTag, ReligiousTagReason[]>>;
+
+export type ReligiousClassification = {
+    religiousTags: ReligiousTag[];
+    religiousTagReasons: ReligiousTagReasons;
+};
+
 /* 
 Food or item included in the menu.
 */
@@ -19,6 +34,7 @@ export type FoodElement = {
     ingredients: string[],
     allergens: string[],
     religiousTags: ReligiousTag[],
+    religiousTagReasons: ReligiousTagReasons,
 
     /* important categories */
     calories: number | null,

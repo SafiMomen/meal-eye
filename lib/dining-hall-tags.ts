@@ -1,5 +1,5 @@
 import type { MealPeriod } from "./dining-page";
-import type { DiningHallMenu } from "./dining-types";
+import type { DiningHallMenu, ReligiousTagReason } from "./dining-types";
 
 function normalizeLabel(value: string): string {
     return value
@@ -9,19 +9,33 @@ function normalizeLabel(value: string): string {
         .trim();
 }
 
-/** Warn about a matching entree, without classifying the whole dining hall. */
-export function hasHaramEntree(
+/** Explain matching entrees without classifying the whole dining hall. */
+export function getHaramEntreeReasons(
     menu: DiningHallMenu,
     selectedMeal: MealPeriod,
-): boolean {
+): ReligiousTagReason[] {
     const period = Object.entries(menu).find(
         ([name]) => normalizeLabel(name) === normalizeLabel(selectedMeal),
     );
 
-    if (!period) { return false; }
+    if (!period) { return []; }
 
-    return Object.entries(period[1]).some(([category, foods]) =>
-        /\bentrees?\b/.test(normalizeLabel(category))
-        && foods.some((food) => food.religiousTags.includes("Haram")),
-    );
+    return Object.entries(period[1])
+        .filter(([category]) => /\bentrees?\b/.test(normalizeLabel(category)))
+        .flatMap(([, foods]) => foods
+            .filter((food) => food.religiousTags.includes("Haram"))
+            .flatMap((food) => {
+                const reasons = food.religiousTagReasons?.Haram;
+                return reasons?.length
+                    ? reasons.map((reason) => ({ ...reason, foodName: food.foodName }))
+                    : [{
+                        source: "unspecified" as const,
+                        text: "No specific ingredient was provided.",
+                        foodName: food.foodName ?? "An entrée",
+                    }];
+            }));
+}
+
+export function hasHaramEntree(menu: DiningHallMenu, selectedMeal: MealPeriod): boolean {
+    return getHaramEntreeReasons(menu, selectedMeal).length > 0;
 }

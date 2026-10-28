@@ -7,7 +7,7 @@ import clsx from "clsx";
 import { ReligiousTagBadge } from "@/components/religious-tag-badge";
 import { useDietaryPreferences } from "@/components/dietary-preferences-provider";
 import { getVisibleReligiousTags } from "@/lib/dietary-preferences";
-import type { ReligiousTag } from "@/lib/dining-types";
+import type { ReligiousTag, ReligiousTagReasons } from "@/lib/dining-types";
 
 export type { ReligiousTag } from "@/lib/dining-types";
 
@@ -24,6 +24,7 @@ export type FoodNutritionCardProps = {
   sugarsGrams: number | null;
   sodiumMilligrams: number | null;
   religiousTags: ReligiousTag[];
+  religiousTagReasons?: ReligiousTagReasons;
 };
 
 function formatNutrient(value: number | null, unit = ""): string {
@@ -38,9 +39,14 @@ const styles = {
     "transition-colors duration-200 hover:border-muted/50",
   ),
   toggle: clsx(
+    "pointer-events-none",
     "grid min-h-[4.75rem] w-full grid-cols-[minmax(0,1fr)_1.25rem] grid-rows-[2rem_auto] items-start gap-x-2 gap-y-1",
     "px-3 py-2.5",
-    "cursor-pointer rounded-sm text-left",
+    "rounded-sm text-left",
+  ),
+  toggleButton: clsx(
+    "absolute inset-0 w-full",
+    "cursor-pointer rounded-sm",
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-inset",
   ),
   foodName: clsx(
@@ -50,7 +56,7 @@ const styles = {
   summaryRow: clsx(
     "col-span-2 grid min-h-5 grid-cols-[minmax(0,1fr)_8.5rem] items-center gap-1",
   ),
-  tagViewport: clsx("min-h-5 min-w-0 overflow-hidden"),
+  tagViewport: clsx("relative z-10 min-h-5 min-w-0 overflow-hidden"),
   collapsedTags: clsx("flex min-h-5 flex-wrap items-center gap-1"),
   summary: clsx("relative h-4 w-full"),
   metric: clsx("absolute inset-y-0 right-0 flex items-baseline gap-1"),
@@ -109,6 +115,7 @@ export function FoodNutritionCard({
   sugarsGrams,
   sodiumMilligrams,
   religiousTags,
+  religiousTagReasons = {},
 }: FoodNutritionCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const { preferences } = useDietaryPreferences();
@@ -122,78 +129,45 @@ export function FoodNutritionCard({
 
   return (
     <article className={styles.card} aria-labelledby={titleId}>
-      <button
-        type="button"
-        className={styles.toggle}
-        aria-expanded={isExpanded}
-        aria-controls={detailsId}
-        onClick={() => setIsExpanded((expanded) => !expanded)}
-      >
-        <span id={titleId} className={styles.foodName} title={foodName}>
-          {foodName}
-        </span>
-
-        <m.span
-          className={styles.chevron}
-          initial={false}
-          animate={{ rotate: isExpanded ? 180 : 0 }}
-          transition={{ duration, ease }}
-          aria-hidden="true"
-        >
-          <svg viewBox="0 0 20 20" className="size-3" fill="none">
-            <path
-              d="m5.5 7.5 4.5 4.5 4.5-4.5"
-              stroke="currentColor"
-              strokeWidth="1.75"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </m.span>
-
-        <span className={styles.summaryRow}>
-          <span className={styles.tagViewport} aria-hidden={isExpanded}>
-            <AnimatePresence initial={false}>
-              {!isExpanded && visibleReligiousTags.length > 0 && (
-                <m.span
-                  key="collapsed-dietary-tags"
-                  className={styles.collapsedTags}
-                  initial={prefersReducedMotion ? false : { y: "110%" }}
-                  animate={{ y: "0%" }}
-                  exit={{ y: "-110%" }}
-                  transition={{
-                    duration: prefersReducedMotion ? 0 : 0.26,
-                    ease,
-                    delay: prefersReducedMotion ? 0 : 0.06,
-                  }}
-                >
-                  {visibleReligiousTags.map((tag) => (
-                    <ReligiousTagBadge key={tag} tag={tag} compact />
-                  ))}
-                </m.span>
-              )}
-            </AnimatePresence>
+      <div className="relative">
+        <button
+          type="button"
+          className={styles.toggleButton}
+          aria-label={`${isExpanded ? "Hide" : "Show"} nutrition for ${foodName}`}
+          aria-expanded={isExpanded}
+          aria-controls={detailsId}
+          onClick={() => setIsExpanded((expanded) => !expanded)}
+        />
+        <div className={styles.toggle}>
+          <span id={titleId} className={styles.foodName} title={foodName}>
+            {foodName}
           </span>
 
-          <span className={styles.summary}>
-            <m.span
-              className={styles.metric}
-              initial={false}
-              animate={{ x: isExpanded ? 0 : -74 }}
-              transition={{ duration, ease }}
-            >
-              <span className={styles.metricLabel}>Calories</span>
-              <span className={styles.caloriesValue}>
-                {formatNutrient(calories)}
-              </span>
-            </m.span>
+          <m.span
+            className={styles.chevron}
+            initial={false}
+            animate={{ rotate: isExpanded ? 180 : 0 }}
+            transition={{ duration, ease }}
+            aria-hidden="true"
+          >
+            <svg viewBox="0 0 20 20" className="size-3" fill="none">
+              <path
+                d="m5.5 7.5 4.5 4.5 4.5-4.5"
+                stroke="currentColor"
+                strokeWidth="1.75"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </m.span>
 
-            <span className={styles.proteinViewport} aria-hidden={isExpanded}>
+          <span className={styles.summaryRow}>
+            <span className={styles.tagViewport} aria-hidden={isExpanded} inert={isExpanded}>
               <AnimatePresence initial={false}>
-                {!isExpanded && (
+                {!isExpanded && visibleReligiousTags.length > 0 && (
                   <m.span
-                    key="collapsed-protein"
-                    className={styles.proteinSummary}
+                    key="collapsed-dietary-tags"
+                    className={styles.collapsedTags}
                     initial={prefersReducedMotion ? false : { y: "110%" }}
                     animate={{ y: "0%" }}
                     exit={{ y: "-110%" }}
@@ -203,17 +177,60 @@ export function FoodNutritionCard({
                       delay: prefersReducedMotion ? 0 : 0.06,
                     }}
                   >
-                    <span className={styles.proteinLabel}>Protein</span>
-                    <span className={styles.proteinValue}>
-                      {formatNutrient(proteinGrams, "g")}
-                    </span>
+                    {visibleReligiousTags.map((tag) => (
+                      <ReligiousTagBadge
+                        key={tag}
+                        tag={tag}
+                        foodName={foodName}
+                        reasons={tag === "Halal?" ? [] : religiousTagReasons[tag]}
+                        compact
+                      />
+                    ))}
                   </m.span>
                 )}
               </AnimatePresence>
             </span>
+
+            <span className={styles.summary}>
+              <m.span
+                className={styles.metric}
+                initial={false}
+                animate={{ x: isExpanded ? 0 : -74 }}
+                transition={{ duration, ease }}
+              >
+                <span className={styles.metricLabel}>Calories</span>
+                <span className={styles.caloriesValue}>
+                  {formatNutrient(calories)}
+                </span>
+              </m.span>
+
+              <span className={styles.proteinViewport} aria-hidden={isExpanded}>
+                <AnimatePresence initial={false}>
+                  {!isExpanded && (
+                    <m.span
+                      key="collapsed-protein"
+                      className={styles.proteinSummary}
+                      initial={prefersReducedMotion ? false : { y: "110%" }}
+                      animate={{ y: "0%" }}
+                      exit={{ y: "-110%" }}
+                      transition={{
+                        duration: prefersReducedMotion ? 0 : 0.26,
+                        ease,
+                        delay: prefersReducedMotion ? 0 : 0.06,
+                      }}
+                    >
+                      <span className={styles.proteinLabel}>Protein</span>
+                      <span className={styles.proteinValue}>
+                        {formatNutrient(proteinGrams, "g")}
+                      </span>
+                    </m.span>
+                  )}
+                </AnimatePresence>
+              </span>
+            </span>
           </span>
-        </span>
-      </button>
+        </div>
+      </div>
 
       <AnimatePresence initial={false}>
         {isExpanded && (
@@ -305,7 +322,11 @@ export function FoodNutritionCard({
                   <ul className={styles.tagList}>
                     {visibleReligiousTags.map((tag) => (
                       <li key={tag}>
-                        <ReligiousTagBadge tag={tag} />
+                        <ReligiousTagBadge
+                          tag={tag}
+                          foodName={foodName}
+                          reasons={tag === "Halal?" ? [] : religiousTagReasons[tag]}
+                        />
                       </li>
                     ))}
                   </ul>

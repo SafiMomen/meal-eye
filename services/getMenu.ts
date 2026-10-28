@@ -2,13 +2,13 @@ import "server-only";
 import * as Cheerio from "cheerio";
 import type { Element } from "domhandler";
 import { cacheLife } from "next/cache";
-import { detectReligiousTags } from "@/lib/religious-tags";
+import { classifyReligiousTags } from "@/lib/religious-tags";
 
 import {
     DiningHallElement,
     DiningHallMenu,
     FoodElement,
-    ReligiousTag,
+    ReligiousClassification,
 } from "@/lib/dining-types";
 
 function normalizeText(value: string): string {
@@ -65,7 +65,7 @@ function extractReligiousTags(
     foodName: string,
     ingredients: string[],
     diningHallName: string
-): ReligiousTag[] {
+): ReligiousClassification {
     const explicitTagElements = foodElementContainer.find(
         "[data-religious-tag], .religious-tag, .dietary-tag"
     );
@@ -81,7 +81,7 @@ function extractReligiousTags(
         })
         .get()
         .join(" ");
-    return detectReligiousTags({
+    return classifyReligiousTags({
         foodName,
         ingredients,
         explicitTagText,
@@ -150,7 +150,7 @@ function extractFoodElement(
         allergens: extractList(
             extractNutritionValue(nutritionLines, "Allergens")
         ),
-        religiousTags: extractReligiousTags(
+        ...extractReligiousTags(
             foodElementContainer,
             foodName,
             ingredients,

@@ -8,13 +8,14 @@ import clsx from "clsx";
 import { ReligiousTagBadge } from "@/components/religious-tag-badge";
 import { useDietaryPreferences } from "@/components/dietary-preferences-provider";
 import type { MealPeriod } from "@/lib/dining-page";
+import type { ReligiousTagReason } from "@/lib/dining-types";
 
 type DiningHallSelectionRowProps = {
   hallName: string;
   selectedMeal: MealPeriod;
   isSelected: boolean;
   availability: "available" | "empty" | "unknown";
-  hasHaramEntree?: boolean;
+  haramEntreeReasons?: ReligiousTagReason[];
 };
 
 const styles = {
@@ -35,6 +36,7 @@ const styles = {
     "rounded-sm bg-princeton/12",
   ),
   name: "min-w-0",
+  tag: "absolute right-2.5 top-1/2 -translate-y-1/2",
 };
 
 export function DiningHallSelectionList({ children }: { children: ReactNode }) {
@@ -50,11 +52,12 @@ export function DiningHallSelectionRow({
   selectedMeal,
   isSelected,
   availability,
-  hasHaramEntree = false,
+  haramEntreeReasons = [],
 }: DiningHallSelectionRowProps) {
   const prefersReducedMotion = useReducedMotion();
   const { preferences } = useDietaryPreferences();
   const isEmpty = availability === "empty";
+  const showHaramTag = haramEntreeReasons.length > 0 && preferences.muslim;
 
   return (
     <m.li
@@ -75,45 +78,52 @@ export function DiningHallSelectionRow({
           {hallName}
         </span>
       ) : (
-        <Link
-          href={{
-            pathname: "/",
-            query: { hall: hallName, meal: selectedMeal.toLowerCase() },
-          }}
-          prefetch={false}
-          scroll={false}
-          className={clsx(
-            styles.link,
-            isSelected ? styles.selected : styles.idle,
+        <>
+          <Link
+            href={{
+              pathname: "/",
+              query: { hall: hallName, meal: selectedMeal.toLowerCase() },
+            }}
+            prefetch={false}
+            scroll={false}
+            className={clsx(
+              styles.link,
+              showHaramTag && "pr-14",
+              isSelected ? styles.selected : styles.idle,
+            )}
+            aria-current={isSelected ? "page" : undefined}
+            title={
+              availability === "unknown"
+                ? "Menu availability not yet confirmed."
+                : hallName
+            }
+          >
+            {isSelected && (
+              <m.span
+                className={styles.selectionBackground}
+                layoutId="selected-hall-background"
+                transition={
+                  prefersReducedMotion
+                    ? { duration: 0 }
+                    : { type: "spring", stiffness: 440, damping: 40 }
+                }
+                aria-hidden="true"
+              />
+            )}
+            <span className={styles.name}>{hallName}</span>
+          </Link>
+          {showHaramTag && (
+            <div className={styles.tag}>
+              <ReligiousTagBadge
+                tag="Haram"
+                variant="text"
+                foodName={`${hallName} ${selectedMeal.toLowerCase()} entrées`}
+                reasons={haramEntreeReasons}
+                title={`An entrée is flagged Haram for ${selectedMeal.toLowerCase()}.`}
+              />
+            </div>
           )}
-          aria-current={isSelected ? "page" : undefined}
-          title={
-            availability === "unknown"
-              ? "Menu availability not yet confirmed."
-              : hallName
-          }
-        >
-          {isSelected && (
-            <m.span
-              className={styles.selectionBackground}
-              layoutId="selected-hall-background"
-              transition={
-                prefersReducedMotion
-                  ? { duration: 0 }
-                  : { type: "spring", stiffness: 440, damping: 40 }
-              }
-              aria-hidden="true"
-            />
-          )}
-          <span className={styles.name}>{hallName}</span>
-          {hasHaramEntree && preferences.muslim && (
-            <ReligiousTagBadge
-              tag="Haram"
-              variant="text"
-              title={`An entrée is flagged Haram for ${selectedMeal.toLowerCase()}.`}
-            />
-          )}
-        </Link>
+        </>
       )}
     </m.li>
   );
