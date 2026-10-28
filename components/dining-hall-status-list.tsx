@@ -1,5 +1,6 @@
 import { getDiningHalls } from "@/services/getDiningHall";
 import { getMenu } from "@/services/getMenu";
+import { DietaryPreferences } from "@/components/dietary-preferences";
 import {
   DiningHallSelectionList,
   DiningHallSelectionRow,
@@ -103,6 +104,7 @@ export async function DiningHallStatusList({
           </DiningHallSelectionList>
         )}
       </nav>
+      <DietaryPreferences />
     </MotionSurface>
   );
 }

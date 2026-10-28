@@ -5,6 +5,8 @@ import { useId, useState } from "react";
 import clsx from "clsx";
 
 import { ReligiousTagBadge } from "@/components/religious-tag-badge";
+import { useDietaryPreferences } from "@/components/dietary-preferences-provider";
+import { getVisibleReligiousTags } from "@/lib/dietary-preferences";
 import type { ReligiousTag } from "@/lib/dining-types";
 
 export type { ReligiousTag } from "@/lib/dining-types";
@@ -36,7 +38,7 @@ const styles = {
     "transition-colors duration-200 hover:border-muted/50",
   ),
   toggle: clsx(
-    "grid h-[4.5rem] w-full grid-cols-[minmax(0,1fr)_1.25rem] grid-rows-[2rem_1rem] items-start gap-x-2 gap-y-1",
+    "grid min-h-[4.75rem] w-full grid-cols-[minmax(0,1fr)_1.25rem] grid-rows-[2rem_auto] items-start gap-x-2 gap-y-1",
     "px-3 py-2.5",
     "cursor-pointer rounded-sm text-left",
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-inset",
@@ -46,10 +48,10 @@ const styles = {
     "text-[13px] font-semibold leading-4",
   ),
   summaryRow: clsx(
-    "col-span-2 grid h-4 grid-cols-[minmax(0,1fr)_8.5rem] items-center gap-1",
+    "col-span-2 grid min-h-5 grid-cols-[minmax(0,1fr)_8.5rem] items-center gap-1",
   ),
-  tagViewport: clsx("h-4 min-w-0 overflow-hidden"),
-  collapsedTags: clsx("flex h-4 items-center gap-0.5"),
+  tagViewport: clsx("min-h-5 min-w-0 overflow-hidden"),
+  collapsedTags: clsx("flex min-h-5 flex-wrap items-center gap-1"),
   summary: clsx("relative h-4 w-full"),
   metric: clsx("absolute inset-y-0 right-0 flex items-baseline gap-1"),
   metricLabel: clsx("text-[9px] font-medium leading-4 text-muted"),
@@ -109,6 +111,8 @@ export function FoodNutritionCard({
   religiousTags,
 }: FoodNutritionCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const { preferences } = useDietaryPreferences();
+  const visibleReligiousTags = getVisibleReligiousTags(religiousTags, preferences);
   const prefersReducedMotion = useReducedMotion();
   const reactId = useId();
   const titleId = `${reactId}-title`;
@@ -150,7 +154,7 @@ export function FoodNutritionCard({
         <span className={styles.summaryRow}>
           <span className={styles.tagViewport} aria-hidden={isExpanded}>
             <AnimatePresence initial={false}>
-              {!isExpanded && religiousTags.length > 0 && (
+              {!isExpanded && visibleReligiousTags.length > 0 && (
                 <m.span
                   key="collapsed-dietary-tags"
                   className={styles.collapsedTags}
@@ -163,7 +167,7 @@ export function FoodNutritionCard({
                     delay: prefersReducedMotion ? 0 : 0.06,
                   }}
                 >
-                  {religiousTags.map((tag) => (
+                  {visibleReligiousTags.map((tag) => (
                     <ReligiousTagBadge key={tag} tag={tag} compact />
                   ))}
                 </m.span>
@@ -292,14 +296,14 @@ export function FoodNutritionCard({
                 </dl>
               </div>
 
-              {religiousTags.length > 0 && (
+              {visibleReligiousTags.length > 0 && (
                 <section
                   className={styles.religiousSection}
                   aria-label="Religious dietary classifications"
                 >
                   <h3 className={styles.religiousHeading}>Diet</h3>
                   <ul className={styles.tagList}>
-                    {religiousTags.map((tag) => (
+                    {visibleReligiousTags.map((tag) => (
                       <li key={tag}>
                         <ReligiousTagBadge tag={tag} />
                       </li>

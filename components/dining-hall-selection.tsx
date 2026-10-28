@@ -6,6 +6,7 @@ import type { ReactNode } from "react";
 import clsx from "clsx";
 
 import { ReligiousTagBadge } from "@/components/religious-tag-badge";
+import { useDietaryPreferences } from "@/components/dietary-preferences-provider";
 import type { MealPeriod } from "@/lib/dining-page";
 
 type DiningHallSelectionRowProps = {
@@ -52,6 +53,7 @@ export function DiningHallSelectionRow({
   hasHaramEntree = false,
 }: DiningHallSelectionRowProps) {
   const prefersReducedMotion = useReducedMotion();
+  const { preferences } = useDietaryPreferences();
   const isEmpty = availability === "empty";
 
   return (
@@ -104,7 +106,7 @@ export function DiningHallSelectionRow({
             />
           )}
           <span className={styles.name}>{hallName}</span>
-          {hasHaramEntree && (
+          {hasHaramEntree && preferences.muslim && (
             <ReligiousTagBadge
               tag="Haram"
               variant="text"

@@ -1,24 +1,26 @@
 import clsx from "clsx";
 
-import type { ReligiousTag } from "@/lib/dining-types";
+import type { DisplayReligiousTag } from "@/lib/dietary-preferences";
 
 type ReligiousTagBadgeProps = {
-  tag: ReligiousTag;
+  tag: DisplayReligiousTag;
   compact?: boolean;
   variant?: "badge" | "text";
   title?: string;
 };
 
-const tagColors: Record<ReligiousTag, string> = {
-  Halal: "bg-emerald-400/15 text-emerald-300",
-  Haram: "bg-red-400/15 text-red-300",
-  Kosher: "bg-blue-400/15 text-blue-300",
-  "Non-Kosher": "bg-amber-400/15 text-amber-300",
+const tagColors: Record<DisplayReligiousTag, string> = {
+  Halal: "bg-emerald-400/20 text-emerald-300",
+  Haram: "bg-red-400/20 text-red-300",
+  "Halal?": "bg-yellow-400/20 text-yellow-300",
+  Kosher: "bg-blue-400/20 text-blue-300",
+  "Non-Kosher": "bg-amber-400/20 text-amber-300",
 };
 
-const textColors: Record<ReligiousTag, string> = {
+const textColors: Record<DisplayReligiousTag, string> = {
   Halal: "text-emerald-300",
   Haram: "text-red-300",
+  "Halal?": "text-yellow-300",
   Kosher: "text-blue-300",
   "Non-Kosher": "text-amber-300",
 };
@@ -33,16 +35,21 @@ export function ReligiousTagBadge({
     <span
       className={clsx(
         "inline-flex shrink-0 items-center whitespace-nowrap",
-        "font-medium leading-none",
+        "font-semibold leading-none",
         variant === "text"
-          ? clsx("text-[9px]", textColors[tag])
+          ? clsx("text-[11px]", textColors[tag])
           : clsx(
               "rounded-[2px] py-0.5",
-              compact ? "px-1 text-[8px]" : "px-1.5 text-[9px]",
+              compact ? "px-1 text-[11px]" : "px-1.5 text-xs",
               tagColors[tag],
             ),
       )}
-      title={title}
+      title={
+        title ??
+        (tag === "Halal?"
+          ? "Halal status unknown. Not confirmed Halal or Haram."
+          : undefined)
+      }
     >
       {tag}
     </span>
