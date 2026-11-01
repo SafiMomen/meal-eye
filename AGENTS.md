@@ -28,3 +28,16 @@ Retain qualifying friction even if it is later fixed or worked around; record th
 Before the final response, run one reporting pass. If candidates remain, from this file's directory run `npx --no-install next internal agent-feedback-instructions` once without piping or truncating its output. Follow its output or error guidance. If a network sandbox blocks it, retry with network access; if it still returns no output, continue normally.
 
 <!-- END:nextjs-agent-feedback -->
+
+## Code cleanliness
+
+Apply the conventions in README.md to every new change:
+
+- Group components, libraries, and tests by feature.
+- Keep shared domain types in `types/` and component props in feature `types.ts`.
+- Keep one React component per file; reuse existing helpers and renderers.
+- Use descriptive names and named settings instead of unexplained constants.
+- Keep layout, spacing, appearance, and interaction classes grouped in `clsx`.
+- Prefer 80-column formatting, with the configured 100-column lint limit.
+- Split long signatures and expressions, and separate logical steps with space.
+- Run formatting, lint, type checks, and focused tests before handing off.
