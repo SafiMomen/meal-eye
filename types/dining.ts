@@ -24,6 +24,7 @@ export type MenuCategories = Record<string, MenuFood[]>;
 export type EntreeDietaryFood = Pick<
   MenuFood,
   | "foodName"
+  | "calories"
   | "ingredients"
   | "allergens"
   | "religiousTags"
@@ -38,7 +39,7 @@ export type HallDietaryWarnings = {
 
 export type HighProteinFood = Pick<
   MenuFood,
-  "foodName" | "ingredients" | "allergens" | "religiousTags"
+  "foodName" | "calories" | "ingredients" | "allergens" | "religiousTags"
 > & {
   proteinGrams: number;
 };

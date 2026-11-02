@@ -1,6 +1,7 @@
 import clsx from "clsx";
 
 import { DiningHallMenuContent } from "./menu-content";
+import { MenuItemCount } from "./menu-item-count";
 import { MenuMessage } from "./menu-message";
 import { MotionSurface } from "@/components/motion/motion-surface";
 import { getDiningHalls } from "@/services/dining/get-dining-halls";
@@ -25,7 +26,6 @@ const styles = {
     "text-[10px] font-bold uppercase tracking-[0.16em] text-accent",
   ),
   heading: clsx("mt-1", "text-xl font-bold tracking-tight text-foreground"),
-  itemCount: clsx("w-fit shrink-0", "text-[11px] font-medium text-muted"),
 };
 
 export async function DiningHallMenu({
@@ -84,10 +84,6 @@ export async function DiningHallMenu({
   }
 
   const [, categories] = selectedPeriod;
-  const itemCount = Object.values(categories).reduce(
-    (total, foods) => total + foods.length,
-    0,
-  );
 
   return (
     <MotionSurface className="min-w-0" delay={MENU_ENTER_DELAY}>
@@ -99,9 +95,7 @@ export async function DiningHallMenu({
               {selectedHall.name}
             </h2>
           </div>
-          <p className={styles.itemCount}>
-            {itemCount} {itemCount === 1 ? "item" : "items"}
-          </p>
+          <MenuItemCount categories={categories} />
         </header>
         <DiningHallMenuContent
           hallName={selectedHall.name}

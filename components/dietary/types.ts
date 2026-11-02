@@ -1,5 +1,7 @@
 import type {
   DietaryPreferences,
+  DietarySettings,
+  CalorieRange,
   DietaryRestriction,
   DietaryTag,
   ReligiousTagReason,
@@ -7,14 +9,14 @@ import type {
   RestrictionMatch,
 } from "@/types/dietary";
 
-export type DietaryPreferencesContextValue = {
-  preferences: DietaryPreferences;
+export type DietaryPreferencesContextValue = DietarySettings & {
   setPreference: (
     preference: keyof DietaryPreferences,
     enabled: boolean,
   ) => void;
-  selectedRestrictions: readonly DietaryRestriction[];
   setRestriction: (restriction: DietaryRestriction, enabled: boolean) => void;
+  setHideUnwantedMeals: (enabled: boolean) => void;
+  setCalorieRange: (range: CalorieRange) => void;
 };
 
 export type PreferenceCheckboxProps = {

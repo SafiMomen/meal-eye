@@ -7,15 +7,12 @@ import clsx from "clsx";
 import { DietaryTagList } from "@/components/dietary/tag-list";
 import { SlideReveal } from "@/components/motion/slide-reveal";
 import { useDietaryPreferences } from "@/hooks/use-dietary-preferences";
-import { getVisibleReligiousTags } from "@/lib/dietary/preferences";
-import { getRestrictionMatches } from "@/lib/dietary/restrictions";
-import { hasDietaryWarning } from "@/lib/dietary/warnings";
+import { getFoodDietaryStatus } from "@/lib/dietary/food-status";
 import { MOTION_DURATION, STANDARD_EASING } from "@/lib/motion/constants";
 import { NutritionSummary } from "./summary";
 import { NutritionDetails } from "./details";
 import { nutritionStyles as styles } from "./styles";
 import type { FoodNutritionCardProps } from "./types";
-import type { DietaryTag } from "@/types/dietary";
 
 export function FoodNutritionCard(food: FoodNutritionCardProps) {
   const {
@@ -26,21 +23,24 @@ export function FoodNutritionCard(food: FoodNutritionCardProps) {
     allergens = [],
   } = food;
   const [isExpanded, setIsExpanded] = useState(false);
-  const { preferences, selectedRestrictions } = useDietaryPreferences();
-  const restrictionMatches = getRestrictionMatches(
-    { foodName, ingredients, allergens },
-    selectedRestrictions,
-  );
-  const visibleTags: DietaryTag[] = getVisibleReligiousTags(
-    religiousTags,
+  const { preferences, selectedRestrictions, calorieRange } =
+    useDietaryPreferences();
+  const {
+    tags: visibleTags,
+    restrictionMatches,
+    shouldAvoid: showWarning,
+  } = getFoodDietaryStatus(
+    {
+      foodName,
+      ingredients,
+      allergens,
+      religiousTags,
+      calories: food.calories,
+    },
     preferences,
+    selectedRestrictions,
+    calorieRange,
   );
-
-  if (restrictionMatches.length > 0) {
-    visibleTags.push("Restricted");
-  }
-
-  const showWarning = hasDietaryWarning(visibleTags);
   const prefersReducedMotion = useReducedMotion();
   const cardId = useId();
   const titleId = `${cardId}-title`;

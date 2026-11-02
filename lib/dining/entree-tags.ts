@@ -7,10 +7,12 @@ import type {
 import type {
   DietaryPreferences,
   DietaryRestriction,
+  CalorieRange,
   ReligiousTagReason,
 } from "../../types/dietary.ts";
 import { findMenuPeriod } from "./menu-periods.ts";
-import { getRestrictionMatches } from "../dietary/restrictions.ts";
+import { getFoodRestrictionMatches } from "../dietary/food-status.ts";
+import { DEFAULT_CALORIE_RANGE } from "../dietary/calories.ts";
 
 function normalizeLabel(value: string): string {
   return value
@@ -36,6 +38,7 @@ export function getEntreeFoods(
     .flatMap(([, foods]) => foods)
     .map((food) => ({
       foodName: food.foodName,
+      calories: food.calories,
       ingredients: food.ingredients,
       allergens: food.allergens,
       religiousTags: food.religiousTags,
@@ -80,6 +83,7 @@ export function getHallDietaryWarnings(
   foods: readonly EntreeDietaryFood[],
   preferences: DietaryPreferences,
   selectedRestrictions: readonly DietaryRestriction[],
+  calorieRange: CalorieRange = DEFAULT_CALORIE_RANGE,
 ): HallDietaryWarnings {
   const warnings: HallDietaryWarnings = {
     tags: [],
@@ -98,7 +102,7 @@ export function getHallDietaryWarnings(
   }
 
   warnings.restrictionMatches = foods.flatMap((food) =>
-    getRestrictionMatches(food, selectedRestrictions),
+    getFoodRestrictionMatches(food, selectedRestrictions, calorieRange),
   );
 
   if (warnings.restrictionMatches.length > 0) {

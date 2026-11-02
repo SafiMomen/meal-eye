@@ -50,6 +50,11 @@ export type MenuCategoryProps = {
   categoryName: string;
   headingId: string;
   foods: MenuFood[];
+  sourceFoods: MenuFood[];
+};
+
+export type MenuItemCountProps = {
+  categories: MenuCategories;
 };
 
 export type MenuFoodItemProps = {

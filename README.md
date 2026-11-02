@@ -92,8 +92,20 @@ preferences without classifying every food in the hall.
 Restriction preferences add a single clickable Restricted badge to matching
 foods. Matching checks declared allergens first, then ingredient text, then the
 food name. Multiple restrictions share one badge, with the matching terms shown
-in its explanation. Preferences stay in client memory across hall and meal
-navigation and start with no restrictions selected.
+in its explanation. Dietary tags, restrictions, hidden-meal selection, and the
+calorie range are saved in local browser storage without an expiry. Saved
+unchecked values and empty restriction selections are preserved. Tabs on the
+same origin synchronize changes; server rendering uses defaults until the
+browser restores its settings. No preferences are sent to the menu service.
+
+Hide unwanted meals removes cards with active Haram, Non-Kosher, or Restricted
+warnings and omits empty categories. Menu counts report the number still shown.
+The calorie sliders use inclusive bounds per item; the maximum slider's
+far-right position means no upper limit. Out-of-range values receive one
+Restricted badge with an explanation of their published calories and the
+selected range. Missing calories are restricted only while a calorie range is
+active. Hall warning badges and protein highlights follow the same calorie
+restrictions.
 
 The keyword groups use the
 [FDA major-allergen categories](https://www.fda.gov/food/food-allergensgluten-free-guidance-documents-regulatory-information/frequently-asked-questions-food-allergen-labeling-guidance-industry)

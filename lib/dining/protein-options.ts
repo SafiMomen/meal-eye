@@ -1,6 +1,5 @@
-import { getVisibleReligiousTags } from "../dietary/preferences.ts";
-import { getRestrictionMatches } from "../dietary/restrictions.ts";
-import { hasDietaryWarning } from "../dietary/warnings.ts";
+import { getFoodDietaryStatus } from "../dietary/food-status.ts";
+import { DEFAULT_CALORIE_RANGE } from "../dietary/calories.ts";
 import { findMenuPeriod } from "./menu-periods.ts";
 import type {
   DiningMenu,
@@ -10,6 +9,7 @@ import type {
 import type {
   DietaryPreferences,
   DietaryRestriction,
+  CalorieRange,
 } from "../../types/dietary.ts";
 
 export const HIGH_PROTEIN_THRESHOLD_GRAMS = 20;
@@ -42,6 +42,7 @@ export function getHighProteinFoods(
       return [
         {
           foodName: food.foodName,
+          calories: food.calories,
           proteinGrams,
           religiousTags: food.religiousTags,
           ingredients: food.ingredients,
@@ -56,16 +57,15 @@ export function getEligibleHighProteinFoods(
   foods: readonly HighProteinFood[],
   preferences: DietaryPreferences,
   selectedRestrictions: readonly DietaryRestriction[],
+  calorieRange: CalorieRange = DEFAULT_CALORIE_RANGE,
 ): HighProteinFood[] {
-  return foods.filter((food) => {
-    const visibleTags = getVisibleReligiousTags(
-      food.religiousTags,
-      preferences,
-    );
-
-    return (
-      !hasDietaryWarning(visibleTags) &&
-      getRestrictionMatches(food, selectedRestrictions).length === 0
-    );
-  });
+  return foods.filter(
+    (food) =>
+      !getFoodDietaryStatus(
+        food,
+        preferences,
+        selectedRestrictions,
+        calorieRange,
+      ).shouldAvoid,
+  );
 }

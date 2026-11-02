@@ -12,6 +12,8 @@ import { MOTION_OFFSET } from "@/lib/motion/constants";
 import { MenuCategory } from "./menu-category";
 import { menuStyles as styles } from "./menu-styles";
 import type { DiningHallMenuContentProps } from "./types";
+import { useDietaryPreferences } from "@/hooks/use-dietary-preferences";
+import { getVisibleMenuCategories } from "@/lib/dining/menu-filtering";
 
 export function DiningHallMenuContent({
   hallName,
@@ -19,8 +21,9 @@ export function DiningHallMenuContent({
   categories,
 }: DiningHallMenuContentProps) {
   const prefersReducedMotion = useReducedMotion();
-  const visibleCategories = Object.entries(categories).filter(
-    ([, foods]) => foods.length > 0,
+  const settings = useDietaryPreferences();
+  const visibleCategories = Object.entries(
+    getVisibleMenuCategories(categories, settings),
   );
   const menuIdentity = `${hallName}-${periodName}`;
 
@@ -43,12 +46,18 @@ export function DiningHallMenuContent({
           transition={getMenuEnterTransition(prefersReducedMotion)}
           aria-live="polite"
         >
+          {visibleCategories.length === 0 && (
+            <p className="text-sm text-muted" role="status">
+              No meals match your current filters.
+            </p>
+          )}
           {visibleCategories.map(([categoryName, foods], categoryIndex) => (
             <MenuCategory
               key={categoryName}
               categoryName={categoryName}
               headingId={`${periodName}-${categoryIndex}-heading`}
               foods={foods}
+              sourceFoods={categories[categoryName]}
             />
           ))}
         </m.div>

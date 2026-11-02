@@ -4,6 +4,7 @@ import clsx from "clsx";
 import { getDiningHalls } from "@/services/dining/get-dining-halls";
 import { DietaryPreferences } from "@/components/dietary/preferences-controls";
 import { RestrictionControls } from "@/components/dietary/restriction-controls";
+import { MealFilterControls } from "@/components/dietary/meal-filter-controls";
 import { MotionSurface } from "@/components/motion/motion-surface";
 import { DiningHallSelectionList } from "./hall-selection-list";
 import { DiningHallSelectionRow } from "./hall-selection-row";
@@ -75,6 +76,7 @@ export async function DiningHallStatusList({
       </nav>
       <DietaryPreferences />
       <RestrictionControls />
+      <MealFilterControls />
     </MotionSurface>
   );
 }

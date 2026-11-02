@@ -16,6 +16,7 @@ export function MenuCategory({
   categoryName,
   headingId,
   foods,
+  sourceFoods,
 }: MenuCategoryProps) {
   const prefersReducedMotion = useReducedMotion();
 
@@ -50,7 +51,7 @@ export function MenuCategory({
       <div className={styles.foodGrid}>
         {foods.map((food, foodIndex) => (
           <MenuFoodItem
-            key={`${food.foodName}-${foodIndex}`}
+            key={`${food.foodName}-${sourceFoods.indexOf(food)}`}
             food={food}
             index={foodIndex}
           />

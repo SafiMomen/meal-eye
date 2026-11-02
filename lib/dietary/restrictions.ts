@@ -3,7 +3,7 @@ import { normalizeDietaryText } from "./text.ts";
 import type {
   DietaryRestriction,
   RestrictionInput,
-  RestrictionMatch,
+  IngredientRestrictionMatch,
 } from "../../types/dietary.ts";
 
 const PLANT_DAIRY_ALTERNATIVES = new RegExp(
@@ -25,8 +25,8 @@ function getRestrictionPattern(restriction: DietaryRestriction): RegExp {
 function readMatches(
   input: RestrictionInput,
   restriction: DietaryRestriction,
-  source: RestrictionMatch["source"],
-): RestrictionMatch[] {
+  source: IngredientRestrictionMatch["source"],
+): IngredientRestrictionMatch[] {
   const sources = {
     allergen: input.allergens,
     ingredient: input.ingredients,
@@ -60,7 +60,7 @@ function readMatches(
 export function getRestrictionMatches(
   input: RestrictionInput,
   selectedRestrictions: readonly DietaryRestriction[],
-): RestrictionMatch[] {
+): IngredientRestrictionMatch[] {
   return [...new Set(selectedRestrictions)].flatMap((restriction) => {
     for (const source of ["allergen", "ingredient", "food-name"] as const) {
       const matches = readMatches(input, restriction, source);

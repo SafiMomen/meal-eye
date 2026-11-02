@@ -49,17 +49,20 @@ export function DiningHallSelectionRow({
   highProteinFoods = [],
 }: DiningHallSelectionRowProps) {
   const prefersReducedMotion = useReducedMotion();
-  const { preferences, selectedRestrictions } = useDietaryPreferences();
+  const { preferences, selectedRestrictions, calorieRange } =
+    useDietaryPreferences();
   const isEmpty = availability === "empty";
   const warnings = getHallDietaryWarnings(
     entreeFoods,
     preferences,
     selectedRestrictions,
+    calorieRange,
   );
   const eligibleProteinFoods = getEligibleHighProteinFoods(
     highProteinFoods,
     preferences,
     selectedRestrictions,
+    calorieRange,
   );
   const hasProteinOptions = !isEmpty && eligibleProteinFoods.length > 0;
 

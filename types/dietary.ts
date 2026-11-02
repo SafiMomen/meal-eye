@@ -59,12 +59,50 @@ export type RestrictionInput = {
   allergens: readonly string[];
 };
 
-export type RestrictionMatch = {
+export type IngredientRestrictionMatch = {
   restriction: DietaryRestriction;
   source: "allergen" | "ingredient" | "food-name";
   text: string;
   identifiers: string[];
 };
+
+export type CalorieRange = {
+  minimum: number;
+  maximum: number | null;
+};
+
+export type CalorieRestrictionMatch = {
+  restriction: "Calories";
+  source: "calories";
+  foodName: string;
+  calories: number | null;
+  range: CalorieRange;
+};
+
+export type RestrictionMatch =
+  IngredientRestrictionMatch | CalorieRestrictionMatch;
+
+export type FoodDietaryInput = RestrictionInput & {
+  calories: number | null;
+  religiousTags: readonly ReligiousTag[];
+};
+
+export type FoodDietaryStatus = {
+  tags: DietaryTag[];
+  restrictionMatches: RestrictionMatch[];
+  shouldAvoid: boolean;
+};
+
+export type DietarySettings = {
+  preferences: DietaryPreferences;
+  selectedRestrictions: readonly DietaryRestriction[];
+  hideUnwantedMeals: boolean;
+  calorieRange: CalorieRange;
+};
+
+export type DietarySettingsUpdater = (
+  current: DietarySettings,
+) => DietarySettings;
 
 export type ExplanationPart = {
   text: string;
