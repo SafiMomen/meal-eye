@@ -31,6 +31,8 @@ Run `npm run format` to apply the repository's formatting conventions.
   workspace.
 - `components/nutrition/`: nutrition cards, summaries, and nutrient groups.
 - `components/dietary/`: preference state, tag displays, and explanations.
+- `components/fitness/`: food logging, portion controls, and calorie estimates.
+- `components/ui/`: shared navigation styles.
 - `components/motion/`: shared animation components.
 - `hooks/`: client-side hooks.
 - `types/`: shared dining, dietary, nutrition, and parsing models.
@@ -38,6 +40,9 @@ Run `npm run format` to apply the repository's formatting conventions.
 - `lib/parsing/`: pure HTML parsers, independent of network requests.
 - `lib/nutrition/`: nutrient definitions and formatting.
 - `lib/motion/`: named animation settings.
+- `lib/fitness/`: profile validation, calorie calculations, and daily log
+  snapshots.
+- `lib/storage/`: shared browser persistence with stable server snapshots.
 - `services/dining/`: server-only cached requests.
 - `tests/`: domain and parser tests grouped by feature.
 
@@ -66,6 +71,12 @@ tests free of live network access. Dietary tags are menu-based indicators, not
 independent religious certification.
 
 ## Meal schedules
+
+The directory parser preserves upstream names and URLs. The hall service skips
+Rockefeller's duplicate menu source and uses Mathey's record for the combined
+Rocky & Mathey entry, regardless of which periods are available. Existing Rocky
+links resolve to Mathey. Sidebar labels omit College and Colleges while request
+URLs and dietary classification still use the original source records.
 
 Meal options follow the selected hall's published periods and the current date
 in Princeton's `America/New_York` time zone. On weekends, halls with Breakfast
@@ -117,3 +128,34 @@ absence of a badge does not establish that food is safe for an allergy.
 
 Visible Haram, Non-Kosher, and Restricted badges enable a dark red gradient on
 the food card. Turning off the corresponding preference removes that warning.
+
+## Food log and fitness settings
+
+Use + on a food card to record one published serving. The button becomes a red ×
+that removes the item directly from the menu. Open Food log beside the meal
+controls to adjust each item with a 1–15 portion slider, or remove it using ×.
+Older saved quantities are preserved until adjusted with the slider. Calories
+and protein are multiplied by portions. Serving size, menu origin, and nutrition
+are saved as snapshots, so later menu updates do not rewrite consumed food.
+Entries and the fitness profile persist locally and synchronize between tabs.
+Each Princeton calendar date has its own log; earlier dates are retained when
+the current day changes. No profile or log data is sent to a server.
+
+Food log (`/food-log`) and Settings (`/settings`) are separate Next.js routes
+with shared navigation and a dark page background. Navigation back to Menus
+preserves the selected dining hall and meal. Both pages retain spring entry
+animations and share the browser's saved fitness data.
+
+Settings opens weight in pounds, height in separate feet and inches fields, age,
+the sex used by the formula, and usual activity level. Existing saved
+measurements retain their physical values. Estimated daily maintenance calories
+use the
+[Mifflin–St Jeor resting-energy equation](https://pubmed.ncbi.nlm.nih.gov/2305711/)
+multiplied by representative
+[physical activity levels](https://www.ncbi.nlm.nih.gov/books/NBK591020/). The
+estimate is for the whole day, not measured activity or a weight-loss target.
+The log shows recorded intake minus estimated burn as a vertical subtraction.
+Negative net calories indicate room remaining in the daily budget, shown in
+green; positive net calories indicate calories above the estimate, shown in red.
+Protein totals remain visible. Missing calorie data makes the total incomplete
+and suppresses the balance rather than treating unknown food as zero calories.

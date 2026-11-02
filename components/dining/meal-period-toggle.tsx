@@ -11,10 +11,11 @@ import {
   MOTION_OFFSET,
 } from "@/lib/motion/constants";
 import type { MealPeriodToggleProps } from "./types";
+import { selectionStyles } from "@/components/ui/selection-styles";
 
 const styles = {
   wrapper: clsx(
-    "flex w-full flex-col items-center gap-2",
+    "flex w-full flex-col items-center gap-2 sm:w-auto",
     "sm:flex-row sm:justify-center sm:gap-3",
   ),
   label: clsx(
@@ -23,21 +24,6 @@ const styles = {
   control: clsx(
     "isolate grid w-full max-w-sm items-center gap-0.5",
     "sm:w-auto sm:max-w-none",
-  ),
-  option: clsx(
-    "relative isolate sm:min-w-20",
-    "px-2 py-1.5 sm:px-3",
-    "rounded-sm",
-    "text-center text-sm font-semibold",
-    "transition-colors duration-200",
-    "focus-visible:outline-2 focus-visible:outline-offset-[-2px]",
-    "focus-visible:outline-accent",
-  ),
-  selectedOption: "text-accent",
-  idleOption: "text-muted hover:text-foreground",
-  selectionBackground: clsx(
-    "absolute inset-0 -z-10",
-    "rounded-sm bg-princeton/12",
   ),
 };
 
@@ -76,15 +62,16 @@ export function MealPeriodToggle({
               href={createDiningHref(period, selectedHallName)}
               scroll={false}
               className={clsx(
-                styles.option,
-                isSelected ? styles.selectedOption : styles.idleOption,
+                selectionStyles.option,
+                "sm:min-w-20",
+                isSelected ? selectionStyles.selected : selectionStyles.idle,
               )}
               aria-current={isSelected ? "page" : undefined}
             >
               {isSelected && (
                 <m.span
                   layoutId="selected-meal-period"
-                  className={styles.selectionBackground}
+                  className={selectionStyles.background}
                   transition={
                     prefersReducedMotion
                       ? { duration: 0 }

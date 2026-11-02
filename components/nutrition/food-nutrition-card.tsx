@@ -5,6 +5,7 @@ import { useId, useState } from "react";
 import clsx from "clsx";
 
 import { DietaryTagList } from "@/components/dietary/tag-list";
+import { AddFoodButton } from "@/components/fitness/add-food-button";
 import { SlideReveal } from "@/components/motion/slide-reveal";
 import { useDietaryPreferences } from "@/hooks/use-dietary-preferences";
 import { getFoodDietaryStatus } from "@/lib/dietary/food-status";
@@ -78,6 +79,16 @@ export function FoodNutritionCard(food: FoodNutritionCardProps) {
           <span id={titleId} className={styles.foodName} title={foodName}>
             {foodName}
           </span>
+
+          <AddFoodButton
+            food={{
+              foodName,
+              servingSize: food.servingSize ?? null,
+              sourceLabel: food.sourceLabel ?? "Dining menu",
+              caloriesPerPortion: food.calories,
+              proteinPerPortion: food.proteinGrams,
+            }}
+          />
 
           <m.span
             className={styles.chevron}

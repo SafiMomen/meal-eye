@@ -14,7 +14,7 @@ import {
 import { menuStyles as styles } from "./menu-styles";
 import type { MenuFoodItemProps } from "./types";
 
-export function MenuFoodItem({ food, index }: MenuFoodItemProps) {
+export function MenuFoodItem({ food, index, sourceLabel }: MenuFoodItemProps) {
   const prefersReducedMotion = useReducedMotion();
   const staggerIndex = index % MENU_STAGGER.groupSize;
 
@@ -46,7 +46,7 @@ export function MenuFoodItem({ food, index }: MenuFoodItemProps) {
         },
       }}
     >
-      <FoodNutritionCard {...food} />
+      <FoodNutritionCard {...food} sourceLabel={sourceLabel} />
     </m.div>
   );
 }

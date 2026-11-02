@@ -50,3 +50,18 @@ export const MEAL_SELECTION_SPRING = {
 
 // Reserve the protein summary's 64px width and its 10px visual gap.
 export const COLLAPSED_CALORIES_OFFSET_PX = 74;
+
+export const FITNESS_SPRING = {
+  type: "spring",
+  stiffness: 430,
+  damping: 24,
+  mass: 0.8,
+} as const;
+
+export const FOOD_LOG_MOTION = {
+  pageScale: 0.94,
+  pageOffset: 18,
+  rowOffset: 20,
+  stagger: 0.045,
+  maximumStagger: 0.2,
+} as const;

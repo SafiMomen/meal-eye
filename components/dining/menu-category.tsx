@@ -17,6 +17,7 @@ export function MenuCategory({
   headingId,
   foods,
   sourceFoods,
+  sourceLabel,
 }: MenuCategoryProps) {
   const prefersReducedMotion = useReducedMotion();
 
@@ -54,6 +55,7 @@ export function MenuCategory({
             key={`${food.foodName}-${sourceFoods.indexOf(food)}`}
             food={food}
             index={foodIndex}
+            sourceLabel={sourceLabel}
           />
         ))}
       </div>

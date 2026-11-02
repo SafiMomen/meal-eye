@@ -64,6 +64,11 @@ function getEvidenceClause(
     : `, which triggered the ${tag} flag`;
 
   switch (source) {
+    case "allergen":
+      return {
+        prefix: `the menu's allergen information for ${foodLabel} lists `,
+        suffix: getIngredientClause(tag, reasons).suffix,
+      };
     case "location":
       return {
         prefix: `${foodLabel} is served at `,

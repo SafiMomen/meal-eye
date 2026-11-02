@@ -14,6 +14,7 @@ import { menuStyles as styles } from "./menu-styles";
 import type { DiningHallMenuContentProps } from "./types";
 import { useDietaryPreferences } from "@/hooks/use-dietary-preferences";
 import { getVisibleMenuCategories } from "@/lib/dining/menu-filtering";
+import { getDiningHallSidebarLabel } from "@/lib/dining/halls";
 
 export function DiningHallMenuContent({
   hallName,
@@ -58,6 +59,7 @@ export function DiningHallMenuContent({
               headingId={`${periodName}-${categoryIndex}-heading`}
               foods={foods}
               sourceFoods={categories[categoryName]}
+              sourceLabel={`${getDiningHallSidebarLabel(hallName)} · ${periodName}`}
             />
           ))}
         </m.div>

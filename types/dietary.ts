@@ -3,7 +3,12 @@ export type ReligiousTag = "Halal" | "Haram" | "Kosher" | "Non-Kosher";
 export type DisplayReligiousTag = ReligiousTag | "Halal?";
 
 export type EvidenceSourceKind =
-  "ingredient" | "food-name" | "menu-label" | "location" | "unspecified";
+  | "ingredient"
+  | "allergen"
+  | "food-name"
+  | "menu-label"
+  | "location"
+  | "unspecified";
 
 export type ProhibitedIngredientCategory = "pork" | "alcohol";
 
@@ -29,6 +34,7 @@ export type ReligiousClassification = {
 export type ReligiousTagInput = {
   foodName: string;
   ingredients: readonly string[];
+  allergens?: readonly string[];
   explicitTagText?: string;
   diningHallName?: string;
 };

@@ -27,6 +27,7 @@ const nonKosherPattern = /\b(?:non|not)\s*kosher\b/;
 export function classifyReligiousTags({
   foodName,
   ingredients,
+  allergens = [],
   explicitTagText = "",
   diningHallName = "",
 }: ReligiousTagInput): ReligiousClassification {
@@ -36,14 +37,6 @@ export function classifyReligiousTags({
   const hallName = normalizeDietaryText(diningHallName);
   const isCenterForJewishLife =
     hallName === "cjl" || /\bcenter for jewish life\b/.test(hallName);
-  const containsPork = porkPattern.test(classificationText);
-  // Intentionally includes cooking wine, wine vinegar, and alcohol-free wording.
-  const containsAlcohol = alcoholPattern.test(classificationText);
-  const isHaram =
-    containsPork ||
-    containsAlcohol ||
-    /\bharam\b/.test(classificationText) ||
-    nonHalalPattern.test(classificationText);
   const tags: ReligiousTag[] = [];
   const reasons: ReligiousTagReasons = {};
   const sources: EvidenceSource[] = (
@@ -56,14 +49,36 @@ export function classifyReligiousTags({
       { source: "menu-label", text: explicitTagText },
     ] satisfies EvidenceSource[]
   ).filter(({ text }) => text.trim().length > 0);
-  const porkReasons = findKeywordEvidence(sources, porkPattern, "pork");
+  // Allergen declarations can identify prohibited ingredients, but cannot
+  // establish a positive religious certification.
+  const prohibitedSources: EvidenceSource[] = [
+    ...sources,
+    ...allergens.map((text): EvidenceSource => ({ source: "allergen", text })),
+  ];
+  const porkReasons = findKeywordEvidence(
+    prohibitedSources,
+    porkPattern,
+    "pork",
+  );
+  const alcoholReasons = findKeywordEvidence(
+    prohibitedSources,
+    alcoholPattern,
+    "alcohol",
+  );
+  const containsPork = porkReasons.length > 0;
+  // Intentionally includes cooking wine, wine vinegar, and alcohol-free wording.
+  const isHaram =
+    containsPork ||
+    alcoholReasons.length > 0 ||
+    /\bharam\b/.test(classificationText) ||
+    nonHalalPattern.test(classificationText);
 
   // Prohibited keywords override an otherwise explicit halal label.
   if (isHaram) {
     tags.push("Haram");
     reasons.Haram = [
       ...porkReasons,
-      ...findKeywordEvidence(sources, alcoholPattern, "alcohol"),
+      ...alcoholReasons,
       ...findExplicitEvidence(sources, /\bharam\b/),
       ...findExplicitEvidence(sources, nonHalalPattern),
     ];

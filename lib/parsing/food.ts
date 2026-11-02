@@ -54,18 +54,20 @@ export function extractMenuFood(
   const ingredients = parseCommaSeparatedList(
     readNutritionValue(nutritionLines, "Ingredients"),
   );
+  const allergens = parseCommaSeparatedList(
+    readNutritionValue(nutritionLines, "Allergens"),
+  );
 
   return {
     foodName,
     servingSize: readNutritionValue(nutritionLines, "Serving Size") ?? null,
     ...nutrition,
     ingredients,
-    allergens: parseCommaSeparatedList(
-      readNutritionValue(nutritionLines, "Allergens"),
-    ),
+    allergens,
     ...classifyReligiousTags({
       foodName,
       ingredients,
+      allergens,
       explicitTagText: readExplicitTagText(foodContainer),
       diningHallName,
     }),

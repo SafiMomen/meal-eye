@@ -16,7 +16,7 @@ export const nutritionStyles = {
   toggle: clsx(
     "pointer-events-none",
     "grid min-h-[4.75rem] w-full",
-    "grid-cols-[minmax(0,1fr)_1.25rem] grid-rows-[2rem_auto]",
+    "grid-cols-[minmax(0,1fr)_1.25rem_1.25rem] grid-rows-[2rem_auto]",
     "items-start gap-x-2 gap-y-1",
     "px-3 py-2.5",
     "rounded-sm text-left",
@@ -32,7 +32,7 @@ export const nutritionStyles = {
     "text-[13px] font-semibold leading-4",
   ),
   summaryRow: clsx(
-    "col-span-2 grid min-h-5 grid-cols-[minmax(0,1fr)_8.5rem] items-center gap-1",
+    "col-span-3 grid min-h-5 grid-cols-[minmax(0,1fr)_8.5rem] items-center gap-1",
   ),
   tagViewport: clsx("relative z-10 min-h-5 min-w-0 overflow-hidden"),
   collapsedTags: clsx("flex min-h-5 flex-wrap items-center gap-1"),

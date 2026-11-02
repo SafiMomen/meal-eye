@@ -7,6 +7,7 @@ import { MotionSurface } from "@/components/motion/motion-surface";
 import { getDiningHalls } from "@/services/dining/get-dining-halls";
 import { getMenu } from "@/services/dining/get-menu";
 import { findMenuPeriod } from "@/lib/dining/menu-periods";
+import { findDiningHall, getDiningHallDisplayName } from "@/lib/dining/halls";
 import type { DiningSelection } from "@/types/dining";
 
 const MENU_ENTER_DELAY = 0.08;
@@ -45,9 +46,7 @@ export async function DiningHallMenu({
   }
 
   const diningHalls = await getDiningHalls().catch(() => null);
-  const selectedHall = diningHalls?.find(
-    (hall) => hall.name === selectedHallName,
-  );
+  const selectedHall = findDiningHall(diningHalls ?? [], selectedHallName);
 
   if (!selectedHall) {
     return (
@@ -58,6 +57,7 @@ export async function DiningHallMenu({
     );
   }
 
+  const displayName = getDiningHallDisplayName(selectedHall.name);
   const menu = await getMenu(selectedHall).catch((error: unknown) => {
     console.error(`Failed to load the menu for ${selectedHall.name}.`, error);
     return null;
@@ -78,7 +78,7 @@ export async function DiningHallMenu({
     return (
       <MenuMessage
         title={`No ${mealLabel} menu`}
-        description={`${selectedHall.name} has not listed this meal period today.`}
+        description={`${displayName} has not listed this meal period today.`}
       />
     );
   }
@@ -92,7 +92,7 @@ export async function DiningHallMenu({
           <div>
             <p className={styles.eyebrow}>{selectedMeal} menu</p>
             <h2 id="selected-hall-heading" className={styles.heading}>
-              {selectedHall.name}
+              {displayName}
             </h2>
           </div>
           <MenuItemCount categories={categories} />

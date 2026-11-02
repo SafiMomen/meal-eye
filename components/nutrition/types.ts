@@ -7,6 +7,8 @@ import type { DietaryTagListProps } from "@/components/dietary/types";
 
 export type FoodNutritionCardProps = NutritionValues & {
   foodName: string;
+  servingSize?: string | null;
+  sourceLabel?: string;
   religiousTags: ReligiousTag[];
   religiousTagReasons?: ReligiousTagReasons;
   ingredients?: readonly string[];

@@ -6,6 +6,7 @@ import clsx from "clsx";
 
 import type { DiningHallSelectionRowProps } from "./types";
 import { createDiningHref } from "@/lib/dining/meal-periods";
+import { getDiningHallSidebarLabel } from "@/lib/dining/halls";
 import { HALL_SELECTION_SPRING, MOTION_DURATION } from "@/lib/motion/constants";
 
 import { DietaryTagList } from "@/components/dietary/tag-list";
@@ -49,6 +50,7 @@ export function DiningHallSelectionRow({
   highProteinFoods = [],
 }: DiningHallSelectionRowProps) {
   const prefersReducedMotion = useReducedMotion();
+  const displayName = getDiningHallSidebarLabel(hallName);
   const { preferences, selectedRestrictions, calorieRange } =
     useDietaryPreferences();
   const isEmpty = availability === "empty";
@@ -102,12 +104,12 @@ export function DiningHallSelectionRow({
           role="link"
           aria-disabled="true"
           aria-current={isSelected ? "page" : undefined}
-          aria-label={`${hallName}: no menu periods listed`}
+          aria-label={`${displayName}: no menu periods listed`}
           className={clsx(styles.link, styles.disabled)}
           title="No menu periods are currently listed."
         >
           <span className={styles.proteinSlot} aria-hidden="true" />
-          <span className={styles.name}>{hallName}</span>
+          <span className={styles.name}>{displayName}</span>
         </span>
       ) : (
         <>
@@ -123,7 +125,7 @@ export function DiningHallSelectionRow({
             title={
               availability === "unknown"
                 ? "Menu availability not yet confirmed."
-                : hallName
+                : displayName
             }
           >
             <span className={styles.proteinSlot}>
@@ -132,7 +134,7 @@ export function DiningHallSelectionRow({
                 foods={eligibleProteinFoods}
               />
             </span>
-            <span className={styles.name}>{hallName}</span>
+            <span className={styles.name}>{displayName}</span>
           </Link>
           <AnimatePresence initial={false}>
             {warnings.tags.length > 0 && (
@@ -149,7 +151,7 @@ export function DiningHallSelectionRow({
                 }}
               >
                 <DietaryTagList
-                  foodName={`${hallName} ${selectedMeal.toLowerCase()} entrées`}
+                  foodName={`${displayName} ${selectedMeal.toLowerCase()} entrées`}
                   tags={warnings.tags}
                   reasons={warnings.reasons}
                   restrictionMatches={warnings.restrictionMatches}

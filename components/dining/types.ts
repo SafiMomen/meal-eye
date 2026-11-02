@@ -51,6 +51,7 @@ export type MenuCategoryProps = {
   headingId: string;
   foods: MenuFood[];
   sourceFoods: MenuFood[];
+  sourceLabel: string;
 };
 
 export type MenuItemCountProps = {
@@ -60,6 +61,7 @@ export type MenuItemCountProps = {
 export type MenuFoodItemProps = {
   food: MenuFood;
   index: number;
+  sourceLabel: string;
 };
 
 export type MenuMessageProps = {
